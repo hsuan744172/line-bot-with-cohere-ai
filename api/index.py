@@ -5,45 +5,30 @@ from linebot.models import (
     MessageEvent, 
     TextMessage, 
     TextSendMessage,
-    ImageSendMessage)
+    ImageSendMessage,
+    FollowEvent
+)
 import cohere
 import os
-
 from dotenv import load_dotenv
+import vercel_wsgi
 
 load_dotenv()
 
+app = Flask(__name__)
+
+# 初始化 LINE Bot API 和 Webhook Handler
+line_bot_api = LineBotApi(os.getenv('LINE_TOKEN'))
+handler = WebhookHandler(os.getenv('LINE_SECRET'))
+
+# 初始化 Cohere 客戶端
 cohere_api_key = os.getenv('COHERE_API_KEY')
 co = cohere.Client(cohere_api_key)
 
-api = LineBotApi(os.getenv('LINE_TOKEN'))
-handler = WebhookHandler(os.getenv('LINE_SECRET'))
-
-app = Flask(__name__)
-
-@app.post("/")
-def callback():
-    # 取得 X-Line-Signature 表頭電子簽章內容
-    signature = request.headers['X-Line-Signature']
-
-    # 以文字形式取得請求內容
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # 比對電子簽章並處理請求內容
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        print("電子簽章錯誤, 請檢查密鑰是否正確？")
-        abort(400)
-
-    return 'OK'
-
 def generate_reply(prompt):
-    # 添加指示，限定回覆為繁體中文和英文
     instruction = "請用繁體中文或英文回答以下問題："
     full_prompt = f"{instruction}\n{prompt}"
-
+    
     response = co.generate(
         model='command-r-03-2024',
         prompt=full_prompt,
@@ -65,13 +50,37 @@ def handle_message(event):
     print("生成的回覆：", reply)  # 調試打印
 
     if reply.startswith('https://'):
-        api.reply_message(
+        line_bot_api.reply_message(
             event.reply_token,
             ImageSendMessage(original_content_url=reply,
                              preview_image_url=reply))
     else:
-        api.reply_message(event.reply_token, 
-                          TextSendMessage(text=reply))
+        line_bot_api.reply_message(event.reply_token, 
+                                   TextSendMessage(text=reply))
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+@handler.add(FollowEvent)
+def handle_follow(event):
+    welcome_message = "歡迎加入！問我任何問題吧，我會用 AI 回覆你！"
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=welcome_message))
+
+@app.route("/", methods=["POST"])
+def callback():
+    # 取得 X-Line-Signature 表頭電子簽章內容
+    signature = request.headers.get('X-Line-Signature')
+
+    # 以文字形式取得請求內容
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    # 比對電子簽章並處理請求內容
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        print("電子簽章錯誤, 請檢查密鑰是否正確？")
+        abort(400)
+
+    return 'OK'
+
+# 使用 vercel_wsgi 處理請求
+def handler_func(request, context):
+    return vercel_wsgi.handle_request(app, request, context)
