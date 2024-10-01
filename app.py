@@ -36,13 +36,13 @@ def callback():
     return 'OK'
 
 def generate_reply(prompt):
-    instruction = "請用繁體中文或英文回答以下問題："
+    instruction = "請用繁體中文或英文回答以下問題（不超過五十字）："
     full_prompt = f"{instruction}\n{prompt}"
 
     response = co.generate(
         model='command-r-03-2024',
         prompt=full_prompt,
-        # max_tokens=100,
+        max_tokens=50,
         temperature=0.7,
         # k=0,
         p=0.9,
