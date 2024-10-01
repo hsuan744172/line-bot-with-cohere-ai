@@ -67,7 +67,3 @@ def handle_message(event):
     else:
         api.reply_message(event.reply_token, 
                           TextSendMessage(text=reply))
-
-# 在 Vercel 上需要的入口點
-if __name__ == "__main__":
-    app.run()
