@@ -5,7 +5,8 @@ from linebot.models import (
     MessageEvent, 
     TextMessage, 
     TextSendMessage,
-    ImageSendMessage)
+    ImageSendMessage
+)
 import cohere
 import os
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ handler = WebhookHandler(os.getenv('LINE_SECRET'))
 
 app = Flask(__name__)
 
-@app.post("/")
+@app.route("/", methods=["POST"])  # 設定為 POST 請求
 def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
@@ -67,4 +68,6 @@ def handle_message(event):
         api.reply_message(event.reply_token, 
                           TextSendMessage(text=reply))
 
-
+# 在 Vercel 上需要的入口點
+if __name__ == "__main__":
+    app.run()
