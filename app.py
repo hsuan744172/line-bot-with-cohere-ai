@@ -36,7 +36,7 @@ def callback():
     return 'OK'
 
 def generate_reply(prompt):
-    instruction = "請用繁體中文或英文回答以下問題（不超過五十字）："
+    instruction = "請用繁體中文或英文回答以下問題，中文請使用台灣用語（不超過五十字）："
     full_prompt = f"{instruction}\n{prompt}"
 
     response = co.generate(
