@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
@@ -34,6 +34,10 @@ def callback():
         abort(400)
 
     return 'OK'
+
+@app.route("/", methods=["HEAD", "GET"])  
+def index() -> Response:
+    return Response("OK", 200)
 
 def generate_reply(prompt):
     instruction = "請用繁體中文或英文回答以下問題（請將回答限縮在五十字內）："
