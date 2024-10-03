@@ -35,7 +35,7 @@ def callback():
 
     return 'OK'
 
-@app.route("/", methods=["HEAD", "GET"])  
+@app.route("/", methods=["HEAD", "GET","OPTIONS"])  
 def index() -> Response:
     return Response("OK", 200)
 
