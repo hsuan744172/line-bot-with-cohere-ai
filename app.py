@@ -46,7 +46,7 @@ def generate_reply(prompt):
     response = co.generate(
         model='command-r-plus-08-2024',
         prompt=full_prompt,
-        max_tokens=50,
+        max_tokens=100,
         temperature=0.7,
         # k=0,
         p=0.9,
