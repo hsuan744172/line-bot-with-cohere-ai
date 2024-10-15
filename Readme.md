@@ -1,4 +1,4 @@
-# LINE Bot 搭配 Cohere API 集成
+# LINE Bot 搭配 Cohere API 
 
 這是一個使用 Flask 框架構建的 LINE 機器人，並集成了 Cohere API 來生成回覆。該機器人可以接收來自 LINE 的消息，並使用 Cohere API 生成繁體中文或英文的回覆。
 
@@ -53,9 +53,9 @@
 2. **添加以下內容**：
 
     ```env
-    LINE_TOKEN=你的LINE_CHANNEL_ACCESS_TOKEN
-    LINE_SECRET=你的LINE_CHANNEL_SECRET
-    COHERE_API_KEY=你的COHERE_API_KEY
+    LINE_TOKEN= your LINE_CHANNEL_ACCESS_TOKEN
+    LINE_SECRET= your LINE_CHANNEL_SECRET
+    COHERE_API_KEY=your COHERE_API_KEY
     ```
 
     > **注意**：請將 `你的LINE_CHANNEL_ACCESS_TOKEN`、`你的LINE_CHANNEL_SECRET` 和 `你的COHERE_API_KEY` 替換為實際的金鑰和秘密。
@@ -107,7 +107,6 @@ Gunicorn 是一個生產級的 WSGI HTTP 伺服器，適用於部署 Flask 應�
 ├── .env                 # 環境變量文件
 ├── vercel.json          # Vercel 配置文件（如有需要）
 └── README.md            # 說明文件
-```
 
 ### 添加我的 LINE 機器人
 
