@@ -107,6 +107,7 @@ Gunicorn 是一個生產級的 WSGI HTTP 伺服器，適用於部署 Flask 應�
 ├── .env                 # 環境變量文件
 ├── vercel.json          # Vercel 配置文件（如有需要）
 └── README.md            # 說明文件
+```
 
 ### 添加我的 LINE 機器人
 
