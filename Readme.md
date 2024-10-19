@@ -117,3 +117,8 @@ Gunicorn 是一個生產級的 WSGI HTTP 伺服器，適用於部署 Flask 應�
 2. **點擊「添加朋友」**。
 3. **搜索我的 LINE ID**：`@417fukfq`。
 4. **添加我的機器人為好友**，然後開始聊天！
+
+
+### 實際使用
+![ailine](picture/p1.png)
+
