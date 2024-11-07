@@ -16,7 +16,7 @@ WORKDIR /app
 COPY . /app
 
 # 安裝依賴
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 安裝完依賴後，使用 gunicorn 啟動應用
 CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
