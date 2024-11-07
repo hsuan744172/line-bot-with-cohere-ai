@@ -15,14 +15,8 @@ WORKDIR /app
 # 複製當前目錄的所有文件到容器內
 COPY . /app
 
-# 安裝 gunicorn
-RUN pip install gunicorn
-
-# 安裝 Poetry
-RUN pip install poetry
-
-# 使用 Poetry 安裝依賴
-RUN poetry install --no-interaction --no-dev
+# 安裝依賴
+RUN pip install -r requirements.txt
 
 # 安裝完依賴後，使用 gunicorn 啟動應用
 CMD ["gunicorn", "--bind", "0.0.0.0:10000", "app:app"]
