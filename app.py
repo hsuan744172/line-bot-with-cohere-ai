@@ -1,15 +1,16 @@
-from flask import Flask, request, abort, Response
+import os
+
+from dotenv import load_dotenv
+from flask import Flask, Response, abort, request
+import cohere
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
-    MessageEvent, 
-    TextMessage, 
-    TextSendMessage,
-    ImageSendMessage
+    ImageSendMessage,
+    MessageEvent,
+    TextMessage,
+    TextSendMessage
 )
-import cohere
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -40,6 +41,15 @@ def index() -> Response:
     return Response("OK", 200)
 
 def generate_reply(prompt):
+    """
+    Generate a reply based on the given prompt using the Cohere API.
+
+    Args:
+        prompt (str): The input prompt to generate a reply for.
+
+    Returns:
+        str: The generated reply text.
+    """
     instruction = "請用繁體中文或英文回答以下問題（請將回答限縮在五十字內）："
     full_prompt = f"{instruction}\n{prompt}"
 
@@ -59,13 +69,21 @@ def generate_reply(prompt):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    """
+    Handle incoming text messages from LINE.
+
+    Args:
+        event (MessageEvent): The event object containing the message data.
+    """
     print("收到的消息內容：", event.message.text)
     reply = generate_reply(event.message.text)
     print("生成的回覆：", reply)
 
+    # Check if the reply is a URL
     if reply.startswith('https://'):
         api.reply_message(
-            event.reply_token,
+            # original_content_url: URL of the original image
+            # preview_image_url: URL of the preview image
             ImageSendMessage(original_content_url=reply,
                              preview_image_url=reply))
     else:
